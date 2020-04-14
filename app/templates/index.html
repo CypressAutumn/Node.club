@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Flasky{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Hello, {% if name %}{{ name }}{% else %}Stranger{% endif %}!</h1>
+    {% if not known %}
+    <p>Pleased to meet you!</p>
+    {% else %}
+    <p>Happy to see you again!</p>
+    {% endif %}
+</div>
+
+{{ wtf.quick_form(form) }}
+
+<div class="gantt-target"></div>
+<script>
+    var tasks = [
+        {
+            start: '2020-04-01',
+            end: '2020-06-01',
+            name: 'ERPNext.club网站设计',
+            id: "Task 0",
+            progress: 100
+        },
+        {
+            start: '2020-04-01',
+            end: '2020-04-14',
+            name: '架构设计',
+            id: "Task 1",
+            progress: 5,
+            dependencies: 'Task 0'
+        },
+        {
+            start: '2020-04-01',
+            end: '2020-06-01',
+            name: '前端',
+            id: "Task 4",
+            progress: 0,
+            dependencies: 'Task 1'
+        },
+        {
+            start: '2020-04-01',
+            end: '2020-04-14',
+            name: '页面结构',
+            id: "Task 7",
+            progress: 0,
+            dependencies: 'Task 4',
+        },
+        {
+            start: '2020-04-01',
+            end: '2020-06-01',
+            name: '后端',
+            id: "Task 5",
+            progress: 0,
+            dependencies: 'Task 1',
+            custom_class: 'bar-milestone'
+        },
+        {
+            start: '2020-04-01',
+            end: '2020-04-14',
+            name: '数据库设计',
+            id: "Task 6",
+            progress: 0,
+            dependencies: 'Task 5',
+        }
+        
+    ]
+    var gantt_chart = new Gantt(".gantt-target", tasks, {
+        on_click: function (task) {
+            console.log(task);
+        },
+        on_date_change: function(task, start, end) {
+            console.log(task, start, end);
+        },
+        on_progress_change: function(task, progress) {
+            console.log(task, progress);
+        },
+        on_view_change: function(mode) {
+            console.log(mode);
+        },
+        view_mode: 'Week',
+        language: 'en'
+    });
+    console.log(gantt_chart);
+</script>
+{% endblock %}
