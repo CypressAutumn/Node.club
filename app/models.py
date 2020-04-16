@@ -14,11 +14,11 @@ class Project(db.Model):
 class Task(db.Model):
     __tablename__ = 'tasks'
     id = db.Column(db.Integer, primary_key=True)
-    start = db.Column(db.String(64), unique=True)
-    end = db.Column(db.String(64), unique=True)
-    name = db.Column(db.String(64), unique=True)
-    progress = db.Column(db.String(64), unique=True)
-    custom_class = db.Column(db.String(64), unique=True)
+    start = db.Column(db.String(64))
+    end = db.Column(db.String(64))
+    name = db.Column(db.String(64))
+    progress = db.Column(db.String(64))
+    custom_class = db.Column(db.String(64))
     dependencies = db.Column(db.Integer, db.ForeignKey('tasks.id'))
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
 
@@ -41,7 +41,7 @@ class User(UserMixin, db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<User %r>' % self.id
     
     @property
     def password(self):

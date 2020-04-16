@@ -1,4 +1,5 @@
 from flask import render_template, session, redirect, url_for, current_app
+from flask_login import login_required, current_user
 from .. import db
 from ..models import User, Project, Task
 from . import main
@@ -15,13 +16,10 @@ def index():
             db.session.add(user)
             db.session.commit()
             session['known'] = False
-            if current_app.config['FLASKY_ADMIN']:
-                send_email(current_app.config['FLASKY_ADMIN'], 'New User',
-                           'mail/new_user', user=user)
         else:
             session['known'] = True
-        session['name'] = form.name.data
-        return redirect(url_for('.index'))
+            session['name'] = form.name.data
+            return redirect(url_for('.index'))
     return render_template('index.html',
                            form=form, name=session.get('name'),
                            known=session.get('known', False))
