@@ -5,3 +5,4 @@ flask_mail
 flask_moment
 flask_sqlalchemy
 flask_wtf
+flask-login
