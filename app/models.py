@@ -1,26 +1,29 @@
+import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from . import login_manager
 from . import db
 
+def gen_id():
+    return uuid.uuid4().hex
 
 class Project(db.Model):
     __tablename__ = 'projects'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=True)
-    intro = db.Column(db.String(300), unique=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    id = db.Column(db.String(32), default=gen_id, primary_key=True, index=True)
+    name = db.Column(db.String(64))
+    intro = db.Column(db.String(300))
+    user_id = db.Column(db.String(32), db.ForeignKey('roles.id'))
 
 class Task(db.Model):
     __tablename__ = 'tasks'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(32), default=gen_id, primary_key=True, index=True)
     start = db.Column(db.String(64))
     end = db.Column(db.String(64))
     name = db.Column(db.String(64))
     progress = db.Column(db.String(64))
     custom_class = db.Column(db.String(64))
-    dependencies = db.Column(db.Integer, db.ForeignKey('tasks.id'))
-    project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
+    dependencies = db.Column(db.String(32), db.ForeignKey('tasks.id'))
+    project_id = db.Column(db.String(32), db.ForeignKey('projects.id'))
 
 class Role(db.Model):
     __tablename__ = 'roles'
@@ -34,7 +37,7 @@ class Role(db.Model):
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(32), default=gen_id, primary_key=True, index=True)
     mobile = db.Column(db.String(64), unique=True, index=True)
     username = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
@@ -56,4 +59,4 @@ class User(UserMixin, db.Model):
 
     @login_manager.user_loader 
     def load_user(user_id):
-        return User.query.get(int(user_id))
+        return User.query.get(str(user_id))

@@ -4,22 +4,49 @@
 {% block title %}Node.club{% endblock %}
 
 {% block page_content %}
-<h1>Creat New Projects</h1>
-{{ wtf.quick_form(form) }}
-<div>
-    <h1>Projects List</h1>
-    <table class="table">
-            <tr>
-                <th>Name</th>
-                <th>Introduction</th>
-                <th></th>
-            </tr>
-            {% for project in projects %}
-            <tr>
-                <td>{{ project.name }}</td><td>{{ project.intro }}</td><td><a href="/projectview?id={{project.id}}">View</a></td>
-            </tr>
-            {% endfor %}
-    </table>
+<!--
+<div class="col-md-12">
+    <h1>Creat New Projects</h1>
+    {{ wtf.quick_form(form) }}
+</div>
+-->
+<div class="modal fade" id="create-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss='modal'>&times;</button>
+                <h1>Creat New Projects</h1>
+            </div>
+            <div class="modal-body">
+                {{ wtf.quick_form(form) }}
+            </div>
+        </div>
+    </div>
+    
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h1>Projects List</h1>
+        <div class="col-md-12 text-right">
+            <button class="btn btn-default" type="submit" data-toggle = "modal" data-target = "#create-modal">创建</button>
+        </div>
+        <div class="col-md-12">
+            <table class="table table-striped">
+                <tr>
+                    <th>Name</th>
+                    <th>Introduction</th>
+                    <th></th>
+                </tr>
+                {% for project in projects %}
+                <tr>
+                    <td>{{ project.name }}</td>
+                    <td>{{ project.intro }}</td>
+                    <td><a href="/projectview?id={{project.id}}">View</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}
 <!--
@@ -28,3 +55,4 @@
 {{ ckeditor.load() }}
 {% endblock %}
 -->
+
