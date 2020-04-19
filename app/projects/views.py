@@ -6,6 +6,8 @@ from ..models import User, Project, Task
 from . import projects
 from .forms import ProjectFrom,TaskFrom
 
+    
+
 @projects.route('/projects', methods=['GET', 'POST'])
 def project():
     form = ProjectFrom()
@@ -13,7 +15,6 @@ def project():
         #这里以后需要加入条数限制还有数据验证
         project = Project(name=form.name.data, intro=form.intro.data, user_id=current_user.id)
         db.session.add(project)
-
         db.session.commit()
         #创建项目的时候创建一个原始任务
         start = datetime.datetime.now()
@@ -37,12 +38,39 @@ def projectview():
         db.session.add(task)
         db.session.commit()
         flash('A New Task was created.')
-    tasks = Task.query.filter_by(project_id=project_id).all()
     return render_template('projectview.html', form=form)
 
 @projects.route('/projectdata', methods=['GET', 'POST'])
 def projectdata():
     project_id = request.args.get('id')
+    if request.method == 'POST':
+        id_group = [] # 用于临时存储已经在数据表中的任务ID，以便下面判断是更新还是插入
+        old_tasks = Task.query.filter_by(project_id=project_id).all()
+        if len(old_tasks) < 1: #如果没有记录，说明ID不存在，不用进一步操作
+            return render_template('index.html')
+        for old_task in old_tasks:
+            id_group.append(old_task.id)
+        data = request.get_data()
+        new_tasks = json.loads(data)
+        for new_task in new_tasks:
+            #如果存在就更新
+            if new_task['id'] in id_group:
+                dep = ''
+                if len(new_task['dependencies']) > 0:
+                    for item in new_task['dependencies']:
+                        dep = dep+','+item
+                task = Task.query.filter_by(id=new_task['id']).first()
+                task.name = new_task['name']
+                task.start = new_task['start']
+                task.end = new_task['end']
+                task.progress = new_task['progress']
+                task.dependencies = dep
+                task.custom_class = new_task['custom_class']
+                db.session.commit()
+            else:
+                task = Task(name=new_task['name'], start=new_task['start'], end=new_task['end'], progress=new_task['progress'], dependencies=dep, custom_class=new_task['custom_class'],project_id=project_id)
+                db.session.add(task)
+                db.session.commit()
     tasks = Task.query.filter_by(project_id=project_id).all()
     task_list = []
     for task in tasks:

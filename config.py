@@ -13,6 +13,8 @@ class Config:
     FLASKY_MAIL_SENDER = 'Flasky Admin <flasky@example.com>'
     FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    BOOTSTRAP_SERVE_LOCAL = True
+    BOOTSTRAP_USE_MINIFIED  = True
 
     @staticmethod
     def init_app(app):

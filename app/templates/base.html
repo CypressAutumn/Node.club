@@ -6,22 +6,7 @@
 {{ super() }}
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-<style>
-    body {
-        font-family: sans-serif;
-    }
-    .container {
-        width: 100%;
-        margin: 0 auto;
-    }
-    /* custom class */
-    .gantt .bar-milestone .bar {
-        fill: tomato;
-    }
-</style>
-<link rel="stylesheet" href="dist/frappe-gantt.css" />
-<script src="dist/frappe-gantt.min.js"></script>
-<script src="dist/jquery.min.js"></script>
+
 {% endblock %}
 
 

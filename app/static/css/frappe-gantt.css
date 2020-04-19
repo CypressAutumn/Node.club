@@ -121,6 +121,35 @@
 .details-container {
   padding: 0.5rem;
   width: 140px;
-
-
 }
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+}
+
+    
+    /* custom class */
+    .gantt .bar-milestone .bar {
+        fill: tomato;
+    }
+
+    .gantt .red .bar {
+        fill: tomato;
+    }
+
+    .gantt .orang .bar {
+        fill: #FFA107;
+    }
+
+    .gantt .violet .bar {
+        fill: #743EE1;
+    }
+
+    .gantt .green .bar {
+        fill: #7CD6FD;
+    }
+
+    .gantt .grey .bar {
+      fill: #a9b5c1;
+  }
