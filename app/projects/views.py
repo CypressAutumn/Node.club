@@ -15,7 +15,7 @@ def project():
         db.session.add(project)
         db.session.commit()
         #创建项目的时候创建一个原始任务
-        start = datetime.datetime.now()
+        start = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
         end = start + datetime.timedelta(days =10) #结束时间默认为10天后
         task = Task(name=form.name.data, progress=50, start=str(start), end=str(end), custom_class='default', project_id=project.id)
         db.session.add(task)

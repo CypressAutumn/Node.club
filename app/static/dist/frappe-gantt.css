@@ -117,3 +117,10 @@
       margin: 0 0 0 -5px;
       border: 5px solid transparent;
       border-top-color: rgba(0, 0, 0, 0.8); }
+
+.details-container {
+  padding: 0.5rem;
+  width: 140px;
+
+
+}

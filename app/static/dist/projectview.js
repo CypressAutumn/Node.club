@@ -1,59 +1,74 @@
 $(document).ready(function(){
     var tasks = [];
+    var gantt;
     var view_mode = 'Day';
     var id = getUrlParam('id')
     $.getJSON('/projectdata?id=' + id,function(data){
         tasks = data;
-        /*tasks = [
-			{
-				start: '2018-10-01',
-				end: '2018-10-08',
-				name: 'Redesign website',
-				id: "Task 0",
-				progress: 20
-			},
-			{
-				start: '2018-10-03',
-				end: '2018-10-06',
-				name: 'Write new content',
-				id: "Task 1",
-				progress: 5,
-				dependencies: 'Task 0'
-			},
-			{
-				start: '2014-01-05',
-				end: '2019-10-12',
-				name: 'Long term task',
-				id: "Task 6",
-				progress: 0
-			}
-		]*/
-        view_mode = 'Day';
-        gannt(tasks,view_mode)
+        gantt_chart = new Gantt(".gantt-target", tasks, {
+            custom_popup_html: function(task) {
+                // the task object will contain the updated
+                // dates and progress value
+                return `
+                  <div class="details-container">
+                    <h5>${task.name}<button type="button" id="edite_task" class="btn btn-warning btn-xs col-xs-offset-3"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></h5>
+                    <span>Start: ${task.start}</span>
+                    <span>End: ${task.end}</span>
+                    <span>Progress: ${task.progress}%</span>
+                    <span>Dependencies: ${task.dependencies}</span>
+                  </div>
+                `;
+            },
+            on_click: function (task) {
+                console.log(task);
+            },
+            on_date_change: function(task, start, end) {
+                console.log(task, start, end);
+            },
+            on_progress_change: function(task, progress) {
+                console.log(task, progress);
+            },
+            on_view_change: function(mode) {
+                console.log(mode);
+            },
+            view_mode: 'Day',
+            language: 'en'
+            });
     });
-    
     $("#year").click(function(){
-        view_mode = 'Year';
-        $(".gantt-target").empty();
-        gannt(tasks,view_mode)
+        $('ul.pagination li').removeClass("active");
+        $("#year").addClass('active')
+        gantt_chart.change_view_mode('Year');
     });
 
     $("#month").click(function(){
-        view_mode = 'Month';
-        $(".gantt-target").empty();
-        gannt(tasks,view_mode)
+        $('ul.pagination li').removeClass("active");
+        $("#month").addClass('active')
+        gantt_chart.change_view_mode('Month');
     });
 
     $("#week").click(function(){
-        view_mode = 'Week';
-        $(".gantt-target").empty();
-        gannt(tasks,view_mode)
+        $('ul.pagination li').removeClass("active");
+        $("#month").addClass('active')
+        gantt_chart.change_view_mode('Week');
     });
 
     $("#day").click(function(){
-        view_mode = 'Day';
-        $(".gantt-target").empty();
-        gannt(tasks,view_mode)
+        $('ul.pagination li').removeClass("active");
+        $("#day").addClass('active')
+        gantt_chart.change_view_mode('Day');
+    });
+
+    $("#half_day").click(function(){
+        $('ul.pagination li').removeClass("active");
+        $("#half_day").addClass('active')
+        gantt_chart.change_view_mode('Half Day');
+    });
+
+    $("#quarter_day").click(function(){
+        $('ul.pagination li').removeClass("active");
+        $("#quarter_day").addClass('active')
+        gantt_chart.change_view_mode('Quarter Day');
     });
 
     $('#create').click(function(){
@@ -70,30 +85,15 @@ $(document).ready(function(){
         	custom_class: 'bar-milestone'
         }
         tasks.push(task)
-        $(".gantt-target").empty();
-        gannt(tasks,view_mode)
+        gantt_chart.refresh(tasks)
+    });
+
+    $('body').on('click','#edite_task',function(){
+        console.log('按了一下');
     });
 
 });
 
-function gannt(tasks,view_mode){
-    var gantt_chart = new Gantt(".gantt-target", tasks, {
-        on_click: function (task) {
-            console.log(task);
-        },
-        on_date_change: function(task, start, end) {
-            console.log(task, start, end);
-        },
-        on_progress_change: function(task, progress) {
-            console.log(task, progress);
-        },
-        on_view_change: function(mode) {
-            console.log(mode);
-        },
-        view_mode: view_mode,
-        language: 'en'
-        });
-}
 
 function getUrlParam(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
