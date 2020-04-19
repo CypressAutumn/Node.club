@@ -13,11 +13,14 @@ def project():
         #这里以后需要加入条数限制还有数据验证
         project = Project(name=form.name.data, intro=form.intro.data, user_id=current_user.id)
         db.session.add(project)
+
         db.session.commit()
         #创建项目的时候创建一个原始任务
-        start = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
+        start = datetime.datetime.now()
+        start_format = start.strftime('%Y-%m-%d %H:%M')
         end = start + datetime.timedelta(days =10) #结束时间默认为10天后
-        task = Task(name=form.name.data, progress=50, start=str(start), end=str(end), custom_class='default', project_id=project.id)
+        end_format = end.strftime('%Y-%m-%d %H:%M')
+        task = Task(name=form.name.data, progress=50, start=str(start_format), end=str(end_format), custom_class='default', project_id=project.id)
         db.session.add(task)
         db.session.commit()
         return redirect('/projectview?id='+project.id)
@@ -35,7 +38,7 @@ def projectview():
         db.session.commit()
         flash('A New Task was created.')
     tasks = Task.query.filter_by(project_id=project_id).all()
-    return render_template('projectview.html', form=form, tasks=tasks)
+    return render_template('projectview.html', form=form)
 
 @projects.route('/projectdata', methods=['GET', 'POST'])
 def projectdata():

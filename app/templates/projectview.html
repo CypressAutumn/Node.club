@@ -24,29 +24,25 @@
     <div class="col-md-4">
         {{ wtf.quick_form(form) }}
     </div>
-    <div class="col-md-8">
-        <table class="table">
-            <tr>
-                <th>Name</th>
-                <th>Start Time</th>
-                <th>End Time</th>
-                <th>Progress</th>
-                <th>Dependencies</th>
-                <th>Color</th>
-            </tr>
-            {% for task in tasks %}
-            <tr>
-                <td>{{ task.name }}</td>
-                <td>{{ task.start }}</td>
-                <td>{{ task.end }}</td>
-                <td>{{ task.progress }}</td>
-                <td>{{ task.dependencies }}</td>
-                <td>{{ task.color }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
     -->
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
 <div class="row">
     <div class="col-md-12">
         <div class="col-md-4">

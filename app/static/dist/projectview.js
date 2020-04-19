@@ -11,7 +11,7 @@ $(document).ready(function(){
                 // dates and progress value
                 return `
                   <div class="details-container">
-                    <h5>${task.name}<button type="button" id="edite_task" class="btn btn-warning btn-xs col-xs-offset-3"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></h5>
+                    <h5>${task.name}<button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-warning btn-xs col-xs-offset-3"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></h5>
                     <span>Start: ${task.start}</span>
                     <span>End: ${task.end}</span>
                     <span>Progress: ${task.progress}%</span>
@@ -88,9 +88,9 @@ $(document).ready(function(){
         gantt_chart.refresh(tasks)
     });
 
-    $('body').on('click','#edite_task',function(){
-        console.log('按了一下');
-    });
+    $('#myModal').on('hidden.bs.modal',function (e) {
+        
+    })
 
 });
 
