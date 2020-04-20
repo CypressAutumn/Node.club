@@ -113,16 +113,40 @@ $(document).ready(function(){
         var end_time = getFormatDate('d ',7);
         var task_id  = tasks.length.toString();
         task = {
+            name: 'New Task',
             start: start_time,
 			end: end_time,
-			name: 'New Task',
             id: task_id,
 			progress: 50,
-        	custom_class: 'red'
+            custom_class: 'grey',
+            dependencies: []
         }
         tasks.push(task);
         gantt_chart.refresh(tasks);
+        console.log(tasks)
     });
+
+    $('#delete_task').click(function(){
+        var r=confirm('Are you sure to delect this task?')
+        if(r){
+            /*
+             1. 申明一个新的空数组
+             2. 然后跳过需要删除的元素，将其他元素添加到新数组
+             3. 将新数组赋值给老的tasks数组
+             4. 刷新画面
+             */
+            var temp_tasks = [];
+            var task_id = $('#name').attr('data-id');
+            for(i in tasks){
+                if(tasks[i].id != task_id){
+                    temp_tasks.push(tasks[i]);
+                }
+            }
+            tasks = temp_tasks;
+            $('#myModal').modal('hide');
+            gantt_chart.refresh(tasks);
+        }
+    })
 
 
     $('#save_changes').click(function(){
@@ -144,8 +168,8 @@ $(document).ready(function(){
                 tasks[i].dependencies = dep;
             }
         }
-        $('#myModal').modal('hide')
-        gantt_chart.refresh(tasks)
+        $('#myModal').modal('hide');
+        gantt_chart.refresh(tasks);
     });
 
     $('#save').click(function(){

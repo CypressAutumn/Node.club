@@ -42,35 +42,60 @@ def projectview():
 
 @projects.route('/projectdata', methods=['GET', 'POST'])
 def projectdata():
+    '''
+        这段太复杂啦，所以需要注释一下：
+        1、通过参数过去项目ID（project_id）
+        2、判断HTTP请求模式
+        如果是提交数据（POST请求）：
+            a、建立空数组变量 用于临时存储已经在数据表中的任务ID，以便下面判断是更新还是插入 （id_group）
+            b、查询项目ID拉取任务数据，如查不到相关数据，说明URL中传递过来的参数是假的或者有误，直接跳转到404
+            c、将任务数据中的任务ID .append() 到空数组变量id_group中
+            d、获取POST提交的经过编辑的项目数据（data），然后 json.loads() 为json对象
+            e、循环取出，客户端传递过来的经过编辑的项目数据（new_tasks），然后分两种情况：
+                。一种已经存在于数据库中的任务，那么更新数据条目
+                。一种不存在于数据库中的任务，那么插入新条目
+                是否存在于数据库中就用:new_tasks中的id，是否存在于id_group中来判断，更新完现有条目后，
+                将已经更新完成的new_tasks的id从id_group中删除，这样id_group中剩下id的就是在客户操作的过程中，
+                删除的，那么再将这些id从数据库中删除就可以了。
+    '''
     project_id = request.args.get('id')
     if request.method == 'POST':
-        id_group = [] # 用于临时存储已经在数据表中的任务ID，以便下面判断是更新还是插入
+        id_group = [] 
         old_tasks = Task.query.filter_by(project_id=project_id).all()
         if len(old_tasks) < 1: #如果没有记录，说明ID不存在，不用进一步操作
-            return render_template('index.html')
+            return render_template('index.html') #这里要返回404
         for old_task in old_tasks:
             id_group.append(old_task.id)
         data = request.get_data()
         new_tasks = json.loads(data)
         for new_task in new_tasks:
-            #如果存在就更新
-            if new_task['id'] in id_group:
-                dep = ''
-                if len(new_task['dependencies']) > 0:
+            dep = ''
+            if len(new_task['dependencies']) > 0:
                     for item in new_task['dependencies']:
                         dep = dep+','+item
+            #如果该任务存在于数据中就更新，否则就插入，数据库中有，新项目数据中没有，那么删除数据中的条目
+            if new_task['id'] in id_group:
                 task = Task.query.filter_by(id=new_task['id']).first()
-                task.name = new_task['name']
-                task.start = new_task['start']
-                task.end = new_task['end']
-                task.progress = new_task['progress']
-                task.dependencies = dep
-                task.custom_class = new_task['custom_class']
+                task.name = str(new_task["name"])
+                task.start = str(new_task['start'])
+                task.end = str(new_task['end'])
+                task.progress = str(new_task['progress'])
+                task.dependencies = str(dep)
+                task.custom_class = str(new_task['custom_class'])
+                db.session.add(task)
                 db.session.commit()
+                id_group.remove(new_task['id'])
             else:
                 task = Task(name=new_task['name'], start=new_task['start'], end=new_task['end'], progress=new_task['progress'], dependencies=dep, custom_class=new_task['custom_class'],project_id=project_id)
                 db.session.add(task)
                 db.session.commit()
+
+        #已经在前端的删除任务后端的数据库也需要删除
+        for item in id_group:
+            del_task = Task.query.filter_by(id=item).first()
+            db.session.delete(del_task)
+            db.session.commit()
+
     tasks = Task.query.filter_by(project_id=project_id).all()
     task_list = []
     for task in tasks:
